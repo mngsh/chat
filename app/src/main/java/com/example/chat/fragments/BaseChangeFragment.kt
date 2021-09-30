@@ -1,4 +1,4 @@
-package com.example.chat.ui.fragments
+package com.example.chat.fragments
 
 import android.os.Bundle
 import android.view.*
@@ -20,6 +20,7 @@ open class BaseChangeFragment (layout:Int): Fragment(layout) {
 
     override fun onStop() {
         super.onStop()
+        hideKeyboard()
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {

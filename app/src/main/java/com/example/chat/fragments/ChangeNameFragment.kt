@@ -1,4 +1,4 @@
-package com.example.chat.ui.fragments
+package com.example.chat.fragments
 
 import com.example.chat.R
 import com.example.chat.utilits.*
@@ -35,6 +35,7 @@ class ChangeNameFragment : BaseChangeFragment(R.layout.fragment_change_name) {
                     if (it.isSuccessful) {
                         showToast(getString(R.string.toast_data_update))
                         USER.fullname = fullname
+                        APP_ACTIVITY.mAppDrawer.updateHeader()
                         fragmentManager?.popBackStack()
                     }
                 }

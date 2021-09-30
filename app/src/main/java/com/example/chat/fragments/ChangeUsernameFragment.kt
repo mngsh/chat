@@ -1,4 +1,4 @@
-package com.example.chat.ui.fragments
+package com.example.chat.fragments
 
 import com.example.chat.R
 import com.example.chat.utilits.*

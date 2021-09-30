@@ -1,4 +1,4 @@
-package com.example.chat.ui.fragments
+package com.example.chat.fragments
 
 import android.content.Intent
 import android.net.Uri
@@ -27,7 +27,7 @@ class SettingsFragment : BaseFragment(R.layout.fragment_settings) {
         settingsBIO.text = USER.bio
         settings_full_name.text = USER.fullname
         settingsPhoneNumberText.text = USER.phone
-        settings_status.text = USER.status
+        settings_status.text = USER.state
         settings_user_name.text = USER.username
         settings_user_name.setOnClickListener { replaceFragment(ChangeUsernameFragment()) }
         settingsLoginBIO.setOnClickListener { replaceFragment(ChangeBIOFragment()) }
@@ -47,9 +47,11 @@ class SettingsFragment : BaseFragment(R.layout.fragment_settings) {
         activity?.menuInflater?.inflate(R.menu.settings_action_menu, menu)
     }
 
+    //слушатель выбора пункта выпадающего окна
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
             R.id.settings_menu_exit -> {
+                AppStates.updateState(AppStates.OFFLINE)
                 AUTH.signOut()
                 (APP_ACTIVITY).replaceActivity(RegisterActivity())
             }
@@ -58,6 +60,7 @@ class SettingsFragment : BaseFragment(R.layout.fragment_settings) {
         return true
     }
 
+    // активность, которая запускается для получения картинки для фото пользователя
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE
@@ -65,13 +68,13 @@ class SettingsFragment : BaseFragment(R.layout.fragment_settings) {
             && data != null) {
             val uri = CropImage.getActivityResult(data)?.uri
             val path = REF_STORAGE_ROOD.child(FOLDER_PROFILE_IMAGE).child(CURRENT_UID)
-
             putImageToStorage(uri, path) {
                 getUrlFromStorage(path) {
                     putUrlToDatabase(it) {
                         settingsUserPhoto.downloadAndSetImage(it)
                         showToast(getString(R.string.toast_data_update))
                         USER.photoUrl = it
+                        APP_ACTIVITY.mAppDrawer.updateHeader()
                     }
                 }
             }

@@ -1,60 +1,50 @@
 package com.example.chat.fragments
 
-import android.os.Bundle
-import androidx.fragment.app.Fragment
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
 import com.example.chat.R
+import com.example.chat.models.CommonModel
+import com.example.chat.models.UserModel
+import com.example.chat.utilits.*
+import com.google.firebase.database.DatabaseReference
+import kotlinx.android.synthetic.main.activity_main.view.*
+import kotlinx.android.synthetic.main.toolbar_info.view.*
 
-// TODO: Rename parameter arguments, choose names that match
-// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-private const val ARG_PARAM1 = "param1"
-private const val ARG_PARAM2 = "param2"
+/*чат с пользователем из контакта*/
 
-/**
- * A simple [Fragment] subclass.
- * Use the [SingleChatFragment.newInstance] factory method to
- * create an instance of this fragment.
- */
-class SingleChatFragment : Fragment() {
-    // TODO: Rename and change types of parameters
-    private var param1: String? = null
-    private var param2: String? = null
+class SingleChatFragment(private val contact: CommonModel) : BaseFragment(R.layout.fragment_single_chat) {
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        arguments?.let {
-            param1 = it.getString(ARG_PARAM1)
-            param2 = it.getString(ARG_PARAM2)
+    private lateinit var mListenerInfoToolbar: AppValueEventListener
+    private lateinit var mReceivingUser: UserModel
+    private lateinit var mToolbarInfo: View
+    private lateinit var mRefUser: DatabaseReference
+
+    override fun onResume() {
+        super.onResume()
+        mToolbarInfo = APP_ACTIVITY.mToolbar
+        mToolbarInfo.toolbar_info.visibility = View.VISIBLE
+        mListenerInfoToolbar = AppValueEventListener {
+            mReceivingUser = it.getUserModel()
+            initInfoToolbar()
         }
+        mRefUser = REF_DATABASE_ROOD.child(NODE_USERS).child(contact.id)
+        mRefUser.addValueEventListener(mListenerInfoToolbar)
     }
 
-    override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_single_chat, container, false)
+    //передаем в верхний toolbar данные о человеке с которым ведем общение
+    //его аватарку, имя контакта и статус
+    private fun initInfoToolbar() {
+        if (mReceivingUser.fullname.isEmpty()) {
+            mToolbarInfo.toolbar_chat_fullname.text = contact.fullname
+        } else {
+            mToolbarInfo.toolbar_chat_fullname.text = mReceivingUser.fullname
+        }
+        mToolbarInfo.toolbar_image.downloadAndSetImage(mReceivingUser.photoUrl)
+        mToolbarInfo.toolbar_chat_status.text = mReceivingUser.state
     }
 
-    companion object {
-        /**
-         * Use this factory method to create a new instance of
-         * this fragment using the provided parameters.
-         *
-         * @param param1 Parameter 1.
-         * @param param2 Parameter 2.
-         * @return A new instance of fragment SingleChatFragment.
-         */
-        // TODO: Rename and change types and number of parameters
-        @JvmStatic
-        fun newInstance(param1: String, param2: String) =
-            SingleChatFragment().apply {
-                arguments = Bundle().apply {
-                    putString(ARG_PARAM1, param1)
-                    putString(ARG_PARAM2, param2)
-                }
-            }
+    override fun onPause() {
+        super.onPause()
+        mToolbarInfo.toolbar_info.visibility = View.GONE
+        mRefUser.removeEventListener(mListenerInfoToolbar)
     }
 }

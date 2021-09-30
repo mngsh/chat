@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.fragments.SettingsFragment">
+    tools:context=".fragments.SettingsFragment">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/settingsHeaderBloc"
@@ -19,7 +19,7 @@
             android:id="@+id/settingsUserPhoto"
             android:layout_width="@dimen/settings_user_photo_width"
             android:layout_height="@dimen/settings_user_photo_height"
-            android:layout_marginStart="@dimen/horizontal_margin"
+            android:layout_marginStart="@dimen/app_margin"
             android:layout_marginLeft="16dp"
             android:src="@drawable/default_photo"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -30,10 +30,10 @@
             android:id="@+id/settings_full_name"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/horizontal_margin"
+            android:layout_marginStart="@dimen/app_margin"
             android:layout_marginLeft="16dp"
-            android:layout_marginTop="@dimen/vertical_margin"
-            android:text="@string/settings_default_name"
+            android:layout_marginTop="@dimen/app_small_margin"
+            tools:text="@string/settings_default_name"
             android:textColor="@color/white"
             android:textSize="@dimen/normalText"
             app:layout_constraintEnd_toEndOf="parent"
@@ -41,11 +41,12 @@
             app:layout_constraintTop_toTopOf="@id/settingsUserPhoto" />
 
         <TextView
+            android:id="@+id/settings_status"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/horizontal_margin"
+            android:layout_marginStart="@dimen/app_margin"
             android:layout_marginLeft="16dp"
-            android:text="@string/settings_default_status"
+            tools:text="@string/settings_default_status"
             android:textColor="@color/white"
             android:textSize="@dimen/smallText"
             app:layout_constraintEnd_toEndOf="parent"
@@ -58,11 +59,11 @@
         android:id="@+id/settingsTextAccount"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/horizontal_margin"
-        android:layout_marginLeft="@dimen/horizontal_margin"
+        android:layout_marginStart="@dimen/app_margin"
+        android:layout_marginLeft="@dimen/app_margin"
         android:layout_marginTop="@dimen/vertical_large_margin"
         android:text="@string/settings_text_account"
-        android:textColor="@color/colorPrimary"
+        android:textColor="@color/purple_500"
         android:textSize="@dimen/smallText"
         android:textStyle="bold"
         app:layout_constraintTop_toBottomOf="@id/settingsHeaderBloc" />
@@ -77,7 +78,7 @@
         <TextView
             android:id="@+id/settingsPhoneNumberText"
             style="@style/normalText"
-            android:text="@string/settings_default_number"
+            tools:text="@string/settings_default_number"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="@id/settingsBTNPhoneNumber" />
 
@@ -106,7 +107,7 @@
         <TextView
             android:id="@+id/settings_user_name"
             style="@style/normalText"
-            android:text="@string/settings_default_login"
+            tools:text="@string/settings_default_login"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="@id/settingsBtNLogin" />
 
@@ -135,7 +136,7 @@
         <TextView
             android:id="@+id/settingsBIO"
             style="@style/normalText"
-            android:text="@string/settings_default_bio"
+            tools:text="@string/settings_default_bio"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="@id/settingsBTNBIO" />
 
@@ -162,8 +163,8 @@
         app:layout_constraintBottom_toBottomOf="@+id/settingsHeaderBloc"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/settingsHeaderBloc"
-        android:layout_marginEnd="@dimen/horizontal_margin"
+        android:layout_marginEnd="@dimen/app_margin"
         app:civ_border_color="@color/gray"
-        android:layout_marginRight="@dimen/horizontal_margin" />
+        android:layout_marginRight="@dimen/app_margin" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

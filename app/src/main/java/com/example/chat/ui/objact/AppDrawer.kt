@@ -1,9 +1,18 @@
-package com.example.chat.ui.`object`
+package com.example.chat.ui.objact
 
+import android.graphics.drawable.Drawable
+import android.net.Uri
 import android.view.View
+import android.widget.ImageView
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.Toolbar
+import androidx.drawerlayout.widget.DrawerLayout
 import com.example.chat.R
-import com.example.chat.ui.fragments.SettingsFragment
+import com.example.chat.fragments.ContactsFragment
+import com.example.chat.fragments.SettingsFragment
+import com.example.chat.utilits.APP_ACTIVITY
+import com.example.chat.utilits.USER
+import com.example.chat.utilits.downloadAndSetImage
 import com.example.chat.utilits.replaceFragment
 import com.mikepenz.materialdrawer.AccountHeader
 import com.mikepenz.materialdrawer.AccountHeaderBuilder
@@ -13,43 +22,45 @@ import com.mikepenz.materialdrawer.model.DividerDrawerItem
 import com.mikepenz.materialdrawer.model.PrimaryDrawerItem
 import com.mikepenz.materialdrawer.model.ProfileDrawerItem
 import com.mikepenz.materialdrawer.model.interfaces.IDrawerItem
-import androidx.appcompat.widget.*
-import androidx.drawerlayout.widget.DrawerLayout
+import com.mikepenz.materialdrawer.util.AbstractDrawerImageLoader
+import com.mikepenz.materialdrawer.util.DrawerImageLoader
 
-class AppDrawer(val mainActivity: AppCompatActivity, val toolbar: Toolbar) {
+class AppDrawer {
 
     private lateinit var mDrawer: Drawer
     private lateinit var mHeader: AccountHeader
     private lateinit var mDrawerLayout: DrawerLayout
+    private lateinit var mCurrentProfile: ProfileDrawerItem
 
     fun create() {
+        initLoader()
         createHeader()
         createDrawer()
         mDrawerLayout = mDrawer.drawerLayout
     }
 
-    fun disableDrawer(){
+    fun disableDrawer() {
         mDrawer.actionBarDrawerToggle?.isDrawerIndicatorEnabled = false
-        mainActivity.supportActionBar?.setDisplayHomeAsUpEnabled(true)
+        APP_ACTIVITY.supportActionBar?.setDisplayHomeAsUpEnabled(true)
         mDrawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED)
-        toolbar.setNavigationOnClickListener {
-            mainActivity.supportFragmentManager.popBackStack()
+        APP_ACTIVITY.mToolbar.setNavigationOnClickListener {
+            APP_ACTIVITY.supportFragmentManager.popBackStack()
         }
     }
 
-    fun enableDrawer(){
-        mainActivity.supportActionBar?.setDisplayHomeAsUpEnabled(false)
+    fun enableDrawer() {
+        APP_ACTIVITY.supportActionBar?.setDisplayHomeAsUpEnabled(false)
         mDrawer.actionBarDrawerToggle?.isDrawerIndicatorEnabled = true
         mDrawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED)
-        toolbar.setNavigationOnClickListener {
+        APP_ACTIVITY.mToolbar.setNavigationOnClickListener {
             mDrawer.openDrawer()
         }
     }
 
     private fun createDrawer() {
         mDrawer = DrawerBuilder()
-            .withActivity(mainActivity)
-            .withToolbar(toolbar)
+            .withActivity(APP_ACTIVITY)
+            .withToolbar(APP_ACTIVITY.mToolbar)
             .withActionBarDrawerToggle(true)
             .withSelectedItem(-1)
             .withAccountHeader(mHeader)
@@ -75,30 +86,36 @@ class AppDrawer(val mainActivity: AppCompatActivity, val toolbar: Toolbar) {
                 PrimaryDrawerItem()
                     .withIdentifier(103)
                     .withIconTintingEnabled(true)
+                    .withName("Контакты")
+                    .withSelectable(false)
+                    .withIcon(R.drawable.ic_menu_contacts),
+                PrimaryDrawerItem()
+                    .withIdentifier(104)
+                    .withIconTintingEnabled(true)
                     .withName("Звонки")
                     .withSelectable(false)
                     .withIcon(R.drawable.ic_menu_phone),
                 PrimaryDrawerItem()
-                    .withIdentifier(104)
+                    .withIdentifier(105)
                     .withIconTintingEnabled(true)
                     .withName("Избранное")
                     .withSelectable(false)
                     .withIcon(R.drawable.ic_menu_favorites),
                 PrimaryDrawerItem()
-                    .withIdentifier(105)
+                    .withIdentifier(106)
                     .withIconTintingEnabled(true)
                     .withName("Настройки")
                     .withSelectable(false)
                     .withIcon(R.drawable.ic_menu_settings),
                 DividerDrawerItem(),
                 PrimaryDrawerItem()
-                    .withIdentifier(106)
+                    .withIdentifier(107)
                     .withIconTintingEnabled(true)
                     .withName("Пригласить друзей")
                     .withSelectable(false)
                     .withIcon(R.drawable.ic_menu_invate),
                 PrimaryDrawerItem()
-                    .withIdentifier(107)
+                    .withIdentifier(108)
                     .withIconTintingEnabled(true)
                     .withName("Вопросы о Chat")
                     .withSelectable(false)
@@ -109,20 +126,47 @@ class AppDrawer(val mainActivity: AppCompatActivity, val toolbar: Toolbar) {
                     position: Int,
                     drawerItem: IDrawerItem<*>
                 ): Boolean {
-                    when (position) {
-                        6 -> mainActivity.replaceFragment(SettingsFragment())
-                    }
+                    clickToItem(position)
                     return false
                 }
             })
             .build()
     }
 
+    private fun clickToItem(position: Int) {
+        when (position) {
+            7 -> APP_ACTIVITY.replaceFragment(SettingsFragment())
+            4 -> APP_ACTIVITY.replaceFragment(ContactsFragment())
+        }
+    }
+
     private fun createHeader() {
+        mCurrentProfile = ProfileDrawerItem()
+            .withName(USER.fullname)
+            .withEmail(USER.phone)
+            .withIcon(USER.photoUrl)
+            .withIdentifier(200)
         mHeader = AccountHeaderBuilder()
-            .withActivity(mainActivity)
+            .withActivity(APP_ACTIVITY)
             .withHeaderBackground(R.drawable.header)
-            .addProfiles(ProfileDrawerItem().withName("Белек Монгуш").withEmail("89998887766"))
+            .addProfiles(mCurrentProfile)
             .build()
+    }
+
+    fun updateHeader() {
+        mCurrentProfile
+            .withName(USER.fullname)
+            .withEmail(USER.phone)
+            .withIcon(USER.photoUrl)
+
+        mHeader.updateProfile(mCurrentProfile)
+    }
+
+    private fun initLoader() {
+        DrawerImageLoader.init(object : AbstractDrawerImageLoader() {
+            override fun set(imageView: ImageView, uri: Uri, placeholder: Drawable) {
+                imageView.downloadAndSetImage(uri.toString())
+            }
+        })
     }
 }

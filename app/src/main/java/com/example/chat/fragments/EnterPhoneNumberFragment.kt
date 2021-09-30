@@ -1,4 +1,4 @@
-package com.example.chat.ui.fragments
+package com.example.chat.fragments
 
 import androidx.fragment.app.Fragment
 import com.example.chat.MainActivity
